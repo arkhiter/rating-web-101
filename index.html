@@ -3,75 +3,210 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Customer Review Portal</title>
+    <title>Guest Feedback | The Culinary Experience</title>
     <style>
-        :root { --primary: #2563eb; --bg: #f1f5f9; }
-        body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
-        .card { background: white; padding: 2.5rem; border-radius: 16px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); width: 100%; max-width: 450px; }
-        h2 { text-align: center; color: #1e293b; margin-top: 0; font-size: 1.5rem; }
-        label { display: block; margin-bottom: 8px; font-weight: 600; color: #475569; font-size: 0.9rem; }
-        input, select, textarea { width: 100%; padding: 12px; margin-bottom: 1.2rem; border: 1.5px solid #e2e8f0; border-radius: 8px; box-sizing: border-box; font-size: 1rem; transition: border-color 0.2s; }
-        input:focus, textarea:focus { outline: none; border-color: var(--primary); }
-        button { background: var(--primary); color: white; border: none; padding: 14px; width: 100%; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: transform 0.1s, background 0.2s; }
-        button:hover { background: #1d4ed8; }
-        button:active { transform: scale(0.98); }
-        button:disabled { background: #94a3b8; cursor: not-allowed; }
-        #msg { color: #059669; text-align: center; display: none; font-weight: 600; padding: 10px; background: #ecfdf5; border-radius: 8px; margin-top: 15px; }
+        :root {
+            --gold: #c5a059;
+            --dark: #1a1a1a;
+            --light: #fdfdfd;
+            --gray: #666;
+        }
+
+        body {
+            font-family: 'Garamond', 'Georgia', serif;
+            background-color: var(--dark);
+            background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&w=1200&q=80');
+            background-size: cover;
+            background-attachment: fixed;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            color: var(--dark);
+        }
+
+        .card {
+            background: var(--light);
+            padding: 40px;
+            border-radius: 4px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+            border-top: 5px solid var(--gold);
+        }
+
+        h2 {
+            font-family: 'Playfair Display', serif;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            font-size: 1.8rem;
+        }
+
+        p.subtitle {
+            color: var(--gray);
+            font-style: italic;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 0;
+            background: #fff;
+            box-sizing: border-box;
+            font-family: serif;
+            font-size: 1rem;
+        }
+
+        /* --- Google Style Star Rating --- */
+        .star-rating {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .star-rating input { display: none; }
+
+        .star-rating label {
+            font-size: 35px;
+            color: #ddd;
+            cursor: pointer;
+            transition: color 0.2s;
+            margin: 0;
+        }
+
+        .star-rating label:hover,
+        .star-rating label:hover ~ label,
+        .star-rating input:checked ~ label {
+            color: var(--gold);
+        }
+
+        button {
+            background: var(--dark);
+            color: var(--gold);
+            border: 1px solid var(--gold);
+            padding: 15px 30px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background: var(--gold);
+            color: var(--dark);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* --- Success Screen --- */
+        #thank-you {
+            display: none;
+            padding: 20px 0;
+        }
+
+        #thank-you h3 {
+            color: var(--gold);
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .ornament {
+            color: var(--gold);
+            font-size: 24px;
+            margin: 10px 0;
+        }
     </style>
 </head>
 <body>
 
 <div class="card">
-    <h2>Leave a Review</h2>
-    <form id="reviewForm">
-        <label>Your Name</label>
-        <input type="text" name="customerName" placeholder="Full Name" required>
+    <div id="form-content">
+        <h2>Guest Feedback</h2>
+        <p class="subtitle">We value your dining experience</p>
 
-        <label>Rating</label>
-        <select name="rating">
-            <option value="5">⭐⭐⭐⭐⭐ - Excellent</option>
-            <option value="4">⭐⭐⭐⭐ - Very Good</option>
-            <option value="3">⭐⭐⭐ - Average</option>
-            <option value="2">⭐⭐ - Poor</option>
-            <option value="1">⭐ - Terrible</option>
-        </select>
+        <form id="reviewForm">
+            <div class="input-group">
+                <label>Guest Name</label>
+                <input type="text" name="customerName" placeholder="e.g. John Doe" required>
+            </div>
 
-        <label>Feedback</label>
-        <textarea name="comment" rows="4" placeholder="Tell us about your experience..." required></textarea>
+            <label>Your Rating</label>
+            <div class="star-rating">
+                <input type="radio" id="star5" name="rating" value="5" required/><label for="star5">★</label>
+                <input type="radio" id="star4" name="rating" value="4"/><label for="star4">★</label>
+                <input type="radio" id="star3" name="rating" value="3"/><label for="star3">★</label>
+                <input type="radio" id="star2" name="rating" value="2"/><label for="star2">★</label>
+                <input type="radio" id="star1" name="rating" value="1"/><label for="star1">★</label>
+            </div>
 
-        <button type="submit" id="submitBtn">Submit Review</button>
-        <div id="msg">✅ Review submitted successfully!</div>
-    </form>
+            <div class="input-group">
+                <label>Experience Details</label>
+                <textarea name="comment" rows="4" placeholder="How was the service and flavors?" required></textarea>
+            </div>
+
+            <button type="submit" id="submitBtn">Send Feedback</button>
+        </form>
+    </div>
+
+    <div id="thank-you">
+        <div class="ornament">❦</div>
+        <h3>Thank You</h3>
+        <p>Your feedback has been received with gratitude.</p>
+        <p>We look forward to serving you again soon.</p>
+        <div class="ornament">❦</div>
+        <button onclick="location.reload()" style="margin-top: 20px; font-size: 0.8rem; padding: 10px;">New Review</button>
+    </div>
 </div>
 
 <script>
-    // Your specific Google Apps Script URL
     const scriptURL = 'https://script.google.com/macros/s/AKfycbz2EKiDS1seGr9BFtUr8jfPOQz4OcEqr2QZcV-8ZJIg9xAGQ93k5w-xtC4dU01HRQDz/exec';
     const form = document.getElementById('reviewForm');
+    const formContent = document.getElementById('form-content');
+    const thankYou = document.getElementById('thank-you');
     const btn = document.getElementById('submitBtn');
-    const msg = document.getElementById('msg');
 
     form.addEventListener('submit', e => {
         e.preventDefault();
         btn.disabled = true;
-        btn.innerText = "Processing...";
+        btn.innerText = "SENDING TO KITCHEN...";
 
-        fetch(scriptURL, { 
-            method: 'POST', 
-            body: new FormData(form)
-        })
-        .then(response => {
-            console.log('Success!', response);
-            btn.style.display = "none";
-            msg.style.display = "block";
-            form.reset();
-        })
-        .catch(error => {
-            console.error('Error!', error.message);
-            alert("Something went wrong. Please try again.");
-            btn.disabled = false;
-            btn.innerText = "Submit Review";
-        });
+        fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+            .then(response => {
+                formContent.style.display = "none";
+                thankYou.style.display = "block";
+            })
+            .catch(error => {
+                console.error('Error!', error.message);
+                alert("Apologies, we encountered an error. Please try again.");
+                btn.disabled = false;
+                btn.innerText = "Send Feedback";
+            });
     });
 </script>
 
